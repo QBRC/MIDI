@@ -162,7 +162,8 @@ def generate_interpret_smile(smile):
 
     return interpret_smile_whole
 
-def extract_input_data_midi(batch_drug_name, batch_smile_seq, batch_cell_line_name, batch_drug_response, continuous_gene_exp, batch_gene_prior=None):
+def extract_input_data_midi(batch_drug_name, batch_smile_seq, batch_cell_line_name, batch_drug_response, continuous_gene_exp, mutation_gene,
+	batch_gene_prior=None):
 	"""
 	Return the actual input data for midi model
 	"""
@@ -214,7 +215,7 @@ def extract_input_data_midi(batch_drug_name, batch_smile_seq, batch_cell_line_na
 	for cell_line_ in batch_cell_line_name:
 	    gene_expression_singlecelline = continuous_gene_exp.loc[cell_line_]
 	    gene_expression_chunk.append(gene_expression_singlecelline)
-	    gene_mutation_singlecelline = mutation_whole.loc[cell_line_]
+	    gene_mutation_singlecelline = mutation_gene.loc[cell_line_]
 	    gene_mutation_chunk.append(gene_mutation_singlecelline)
 
 	if not batch_gene_prior == None:
