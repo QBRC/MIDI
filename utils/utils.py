@@ -51,6 +51,26 @@ with open('gene_embedding_important.npy', 'rb') as f:
 vocabulary_drug = ['F', 'S', 'N', 'O', 'I', 'L', 'B', 'C']
 vocabulary_gene_mutation = [0, 1]
 
+import geneformer as ge
+import pickle
+ge.emb_extractor.pu
+ge.tokenizer.TOKEN_DICTIONARY_FILE
+with open(ge.tokenizer.TOKEN_DICTIONARY_FILE, "rb") as f:
+    gene_token_dict = pickle.load(f)
+ensemble_id = pyreadr.read_r('/project/DPDS/Xiao_lab/shared/lcai/Ling-Tingyi/LCCL_input/RNA-CCLE_RNAseq.annot.rds')[None]
+ensemble_id.set_index('ENSG_id',inplace =True)
+gene_name_avail_geneformer = []
+token_avail_geneformer = []
+ensemble_avail_geneformer = []
+for i in ensemble_ids:
+    try:
+        token_id = gene_token_dict[i]
+        token_avail_geneformer.append(token_id)
+        ensemble_avail_geneformer.append(i)
+        gene_name_avail_geneformer.append(ensemble_id.loc[i]['EntrezSymbol'])
+    except:
+        continue
+
 drug_names = ['17-AAG','NVP-AEW541','AZD0530','AZD6244','Erlotinib','Irinotecan',
  'L-685458','lapatinib','LBW242','nilotinib','nutlin-3','Paclitaxel','Panobinostat',
  'PD-0325901','PD-0332991','Crizotinib','PHA-665752','PLX-4720','RAF265','sorafenib',
