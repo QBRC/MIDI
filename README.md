@@ -42,5 +42,5 @@ Our pre-trained model parameters are stored [here](Pre_train_model)
 ## Acknowledgements
 
 ## Citation
-* For license information, please refer to: \
-https://github.com/Somatic-pipeline/QBRC-Somatic-Pipeline/blob/master/Liscense.txt
+* For license information, please refer to:
+[Open Source Release of Software](https://www.utsouthwestern.edu/about-us/administrative-offices/technology-development/agreements/open-source-release-of-software.html)
