@@ -1,3 +1,5 @@
+<img src="https://qbrc.swmed.edu/template/images/qbrc-logo1.png" alt="QBRC Logo" height="100">
+
 # MIDI
 This is the official codebase for **MIDI: Attention-Guided Mechanism-Interpretable Drug-Gene Interaction (MIDI) Modeling for Cancer Drug Response Prediction and Target Effect Explanation**.
 
@@ -38,3 +40,7 @@ Our pre-trained model parameters are stored [here](Pre_train_model)
 
 
 ## Acknowledgements
+
+## Citation
+* For license information, please refer to: \
+https://github.com/Somatic-pipeline/QBRC-Somatic-Pipeline/blob/master/Liscense.txt
