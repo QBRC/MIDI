@@ -51,6 +51,7 @@ with open('gene_embedding_important.npy', 'rb') as f:
 vocabulary_drug = ['F', 'S', 'N', 'O', 'I', 'L', 'B', 'C']
 vocabulary_gene_mutation = [0, 1]
 
+"""
 import geneformer as ge
 import pickle
 ge.emb_extractor.pu
@@ -70,11 +71,12 @@ for i in ensemble_ids:
         gene_name_avail_geneformer.append(ensemble_id.loc[i]['EntrezSymbol'])
     except:
         continue
+"""
 
-drug_names = ['17-AAG','NVP-AEW541','AZD0530','AZD6244','Erlotinib','Irinotecan',
- 'L-685458','lapatinib','LBW242','nilotinib','nutlin-3','Paclitaxel','Panobinostat',
- 'PD-0325901','PD-0332991','Crizotinib','PHA-665752','PLX-4720','RAF265','sorafenib',
- 'NVP-TAE684','dovitinib','topotecan','vandetanib']
+#drug_names = ['17-AAG','NVP-AEW541','AZD0530','AZD6244','Erlotinib','Irinotecan',
+ #'L-685458','lapatinib','LBW242','nilotinib','nutlin-3','Paclitaxel','Panobinostat',
+ #'PD-0325901','PD-0332991','Crizotinib','PHA-665752','PLX-4720','RAF265','sorafenib',
+ #'NVP-TAE684','dovitinib','topotecan','vandetanib']
 
 """
 define the maximum smile length
