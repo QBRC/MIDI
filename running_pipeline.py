@@ -271,12 +271,14 @@ if __name__ == '__main__':
 	"""
 	if len(sys.argv) > 2:
 	    drug_smile_input = sys.argv[2]
+        gene_profile = sys.argv[3]
 	    job_id = sys.argv[1]
 	    print(f"Smile Sequence input is, {drug_smile_input}")
 	else:
 	    print("No Smile Input")
 	    sys.exit(0)
 
+    gene_profile_ = pd.read_csv(gene_profile)
 	ensemble_id = pyreadr.read_r('Ling-Tingyi/LCCL_input/RNA-CCLE_RNAseq.annot.rds')[None]
 	gene_expression = gene_expression.set_index("CCLE_ID")
 	kk = pd.read_csv('Ling-Tingyi/LCCL_input/sample_info.csv')
