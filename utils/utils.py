@@ -233,9 +233,15 @@ def extract_input_data_midi(batch_drug_name, batch_smile_seq, batch_cell_line_na
 	edge_type_matrix_chunk = tf.stack(edge_type_matrix_chunk)
 
 	for cell_line_ in batch_cell_line_name:
-	    gene_expression_singlecelline = continuous_gene_exp.loc[cell_line_]
+        try:
+            gene_expression_singlecelline = continuous_gene_exp.loc[cell_line_]
+        except:
+            gene_expression_singlecelline = continuous_gene_exp
 	    gene_expression_chunk.append(gene_expression_singlecelline)
-	    gene_mutation_singlecelline = mutation_gene.loc[cell_line_]
+        try:
+            gene_mutation_singlecelline = mutation_gene.loc[cell_line_]
+        except:
+            gene_mutation_singlecelline = mutation_gene
 	    gene_mutation_chunk.append(gene_mutation_singlecelline)
 
 	if not batch_gene_prior == None:
