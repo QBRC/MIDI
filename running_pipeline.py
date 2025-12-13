@@ -285,9 +285,11 @@ if __name__ == '__main__':
 
 	#feature_select_score = drug_feature_select_score[4]
 
+    df_drug_eff = pd.DataFrame(list(zip(['negative_activity_area'], [np.array(prediction)[0][0]])),
+                             columns=['measurement', 'value'])
 
-    df_rank_gene = pd.DataFrame(list(zip(list(top_gene_names), list(np.array(top_genes_score)))),
-                                 columns=['gene_name', 'rank'])
+    df_drug_eff.to_csv('output/drug_effect_prediction.csv')
+
 
     top_genes_score, top_genes_index = tf.math.top_k(feature_select_score_gene[5], k=6144)
     top_gene_names = np.array([gene_name_avail_geneformer[j] for j in top_genes_index])
@@ -296,7 +298,9 @@ if __name__ == '__main__':
     Create a dataframe for the gene ranking list
     """
     df_rank_gene = pd.DataFrame(list(zip(list(top_gene_names), list(np.array(top_genes_score)))),
-                                 columns=['gene_name', 'rank'])
+                                 columns=['gene_name', 'attention_score'])
+
+    df_rank_gene.to_csv('output/gene_rank.csv')
 
     #total_top_gene_rank.set_index('drug_names',inplace=True)
     #x = total_top_gene_rank.loc[drug_name_plot]['gene_name']
@@ -307,40 +311,45 @@ if __name__ == '__main__':
     plt.figure(figsize=(5,5))
     plt.plot(x_,y, 'o',markersize=5)
 
-	plt.figure()
-	g = sns.heatmap(feature_select_score_drug[0][0:drug_smile_length_chunk[0],0:drug_smile_length_chunk[0]], cmap="Blues")
-	score = list(np.array(tf.reduce_mean(tf.reduce_mean(feature_select_score_drug, axis=0)[0:drug_smile_length_chunk[0], \
-	                                     0:drug_smile_length_chunk[0]],axis=0)))
-    
-	score_att = feature_select_score_drug[0:drug_smile_length_chunk[0],0:drug_smile_length_chunk[0]]
-	print(score)
-	sns.set(rc={"figure.figsize":(10,10)})
-	x_labels = list(batch_interpret_smile[0])
-	y_labels = list(batch_interpret_smile[0])
-	#atoms_drug.append(x_labels)
-	#y_labels.reverse()
-	g.set_xticks(range(len(x_labels)), labels=x_labels)
-	#g.set_yticks(range(1), labels=[' '])
-	g.set_yticks(range(len(y_labels)), labels=y_labels)
-	g.tick_params(axis='x', rotation=0)
-	#g.set(title =drug_name)
-	#g.plot()
-	figure = g.get_figure()
-	figure.savefig(f'Output/{job_id}_heatmap.png', dpi=300)
+    plt.savefig('output/gene_attention_scores.png',dpi=300)
 
-	weight_atoms_indices, highlight_bond, colors, colors_bond = extract_atoms_bonds(feature_select_score_drug[0], batch_smile_seq[0])
-	#weight_atoms_indices, highlight_bond, colors, colors_bond = extract_atoms_bonds(feature_select_score_drug_whole[0], batch_smile_seq[0])
-	mol = Chem.MolFromSmiles(batch_smile_seq[0])
-	mol = mol_with_atom_index(mol)
-	d2d = rdMolDraw2D.MolDraw2DCairo(500,300)
-	option = d2d.drawOptions()
-	option.legendFontSize = 18
-	option.bondLineWidth = 1.5
-	option.highlightBondWidthMultiplier = 20
-	option.updateAtomPalette({k: (0, 0, 0) for k in DrawingOptions.elemDict.keys()})
-	d2d.DrawMolecule(mol,highlightAtoms=weight_atoms_indices,highlightAtomColors=colors)#, highlightBonds=highlight_bond, highlightBondColors=colors_bond)
-	#d2d.DrawMolecule(mol,highlightAtoms=weight_atoms_indices, highlightBonds=highlight_bond, highlightBondColors=colors_bond)
-	d2d.FinishDrawing()
-	d2d.WriteDrawingText(f"Output/{job_id}_molecule.png")
+    plt.cla()
+
+	plt.figure()
+    g = sns.heatmap(feature_select_score_drug[0][0:drug_smile_length_chunk[0],0:drug_smile_length_chunk[0]], cmap="Blues")
+    sns.set(rc={"figure.figsize":(10,10)})
+    interpret_smile = list(generate_interpret_smile(batch_smile_seq[0])[0])
+    x_labels = list(interpret_smile)
+    y_labels = list(interpret_smile)
+    #atoms_drug.append(x_labels)
+    #y_labels.reverse()
+    g.set_xticks(range(len(x_labels)), labels=x_labels)
+    #g.set_yticks(range(1), labels=[' '])
+    g.set_yticks(range(len(y_labels)), labels=y_labels)
+    g.tick_params(axis='x', rotation=0)
+    g.set(title = drug_smile_input)
+    g.plot()
+    figure = g.get_figure()
+    figure.savefig('output/heatmap.png', dpi=300)
+    
+    from PIL import Image
+    from io import BytesIO
+    weight_atoms_indices, highlight_bond, colors, colors_bond = extract_atoms_bonds(feature_select_score_drug[0], batch_smile_seq[0])
+    #weight_atoms_indices, highlight_bond, colors, colors_bond = extract_atoms_bonds(feature_select_score_drug_whole[0], batch_smile_seq[0])
+    mol = Chem.MolFromSmiles(batch_smile_seq[0])
+    mol = mol_with_atom_index(mol)
+    d2d = rdMolDraw2D.MolDraw2DCairo(500,300)
+    option = d2d.drawOptions()
+    option.legendFontSize = 18
+    option.bondLineWidth = 1.5
+    option.highlightBondWidthMultiplier = 20
+    option.updateAtomPalette({k: (0, 0, 0) for k in DrawingOptions.elemDict.keys()})
+    d2d.DrawMolecule(mol,highlightAtoms=weight_atoms_indices,highlightAtomColors=colors)#, highlightBonds=highlight_bond, highlightBondColors=colors_bond)
+    #2d.DrawMolecule(mol,highlightAtoms=weight_atoms_indices, highlightBonds=highlight_bond, highlightBondColors=colors_bond)
+    #d2d.FinishDrawing()
+    bio = BytesIO(d2d.GetDrawingText())
+    Image.open(bio)
+    d2d.FinishDrawing()
+    d2d.WriteDrawingText("output/molecule.png")
 
     
