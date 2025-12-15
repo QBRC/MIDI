@@ -248,7 +248,7 @@ if __name__ == '__main__':
 	#batch_smile_seq = df_drug_train_data['smile_seq'] 
 	batch_smile_seq = [drug_smile_input]
 	#batch_interpret_smile = df_drug_train_data['interpret_smile']
-	batch_interpret_smile = [interpret_drug_smile_input]
+	#batch_interpret_smile = [interpret_drug_smile_input]
 	batch_cell_line_name = [df_drug_train_data['cell_line_name'][0]]
 	batch_drug_response = [df_drug_train_data['drug_response'][0]]
 	batch_drug_name = [drug_name for i in range(len(batch_smile_seq))]
