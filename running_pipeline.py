@@ -219,14 +219,16 @@ if __name__ == '__main__':
 	#ensemble_id = pyreadr.read_r('Ling-Tingyi/LCCL_input/RNA-CCLE_RNAseq.annot.rds')[None]
 
 	#k = drug_transformer_(gene_embeddings)
-    #k = drug_transformer_(gene_embeddings)#, relative_pos_enc_lookup=relative_pos_embedding)
-    model_midi = k.model_construction_midi(if_mutation=True)
-    model_midi.load_weights('Pre_train_model/midi_55_epochs_prior_3000_pairs_with_drug_regularizer_softmax_temperature_9_training.h5')
+    
 	
     with open('gene_embedding_important.npy', 'rb') as f:
-    gene_embeddings = np.load(f)
+        gene_embeddings = np.load(f)
 
     gene_name_avail_geneformer = list(np.load('gene_names.npy'))
+
+    k = drug_transformer_(gene_embeddings)#, relative_pos_enc_lookup=relative_pos_embedding)
+    model_midi = k.model_construction_midi(if_mutation=True)
+    model_midi.load_weights('Pre_train_model/midi_55_epochs_prior_3000_pairs_with_drug_regularizer_softmax_temperature_9_training.h5')
 
     """
     extract self-attention score for drug structure, and cross-attention score
