@@ -32,7 +32,7 @@ bash requirement.txt
 ```
 
 ## Tutorial
-The tutorial for running MIDI is listed step-by-step [here](tutorial)
+The tutorial for running MIDI is listed step-by-step in MIDI_tutorial.ipynb
 
 Our pre-trained model parameters are stored [here](Pre_train_model) 
 
