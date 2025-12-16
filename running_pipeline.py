@@ -1,4 +1,5 @@
-from utils.process_data import *
+#from utils.process_data import *
+from utils.utils import *
 from utils.smile_rel_dist_interpreter import *
 from base_line_models import *
 from drug_transformer import *
@@ -122,6 +123,79 @@ def generate_interpret_smile(smile):
     interpret_smile_whole = np.stack(interpret_smile_whole)
 
     return interpret_smile_whole
+
+def extract_input_data_midi(batch_drug_name, batch_smile_seq, batch_cell_line_name, batch_drug_response, continuous_gene_exp, mutation_gene,
+    batch_gene_prior=None):
+    """
+    Return the actual input data for midi model
+    """
+    rel_distance_batch = [generate_rel_dist_matrix(x) for x in batch_smile_seq]
+    drug_rel_position_chunk = []
+    drug_smile_length_chunk = []
+    drug_atom_one_hot_chunk = []
+    gene_mutation_chunk = []
+    edge_type_matrix_chunk = []
+    gene_expression_chunk = []
+    gene_selection_chunk = []
+    for rel_distance_ in rel_distance_batch: 
+        shape = rel_distance_.shape[0]
+        drug_rel_position = tf.cast(tf.gather(P[0], tf.cast(rel_distance_,tf.int32), axis=0), tf.float32)
+        concat_left = tf.cast(tf.zeros((smile_length-shape,shape,60)), tf.float32)
+        concat_right = tf.cast(tf.zeros((smile_length,smile_length-shape,60)), tf.float32)
+        drug_rel_position = tf.concat((drug_rel_position,concat_left),axis=0)
+        drug_rel_position = tf.concat((drug_rel_position,concat_right),axis=1)
+        drug_rel_position_chunk.append(drug_rel_position)
+    drug_rel_position_chunk = tf.stack(drug_rel_position_chunk)
+
+    for smile_seq_origin in batch_smile_seq:
+        interpret_smile = list(generate_interpret_smile(smile_seq_origin)[0])
+        input_drug_atom_names = tf.constant(interpret_smile)
+        input_drug_atom_index = string_lookup(input_drug_atom_names)-1
+        input_drug_atom_one_hot = layer_one_hot(input_drug_atom_index)
+        shape_drug_miss = input_drug_atom_one_hot.shape[0]
+        concat_right = tf.zeros((smile_length-shape_drug_miss,8))
+        input_drug_atom_one_hot = tf.concat((input_drug_atom_one_hot,concat_right),axis=0)
+        drug_smile_length_chunk.append(shape_drug_miss)
+        drug_atom_one_hot_chunk.append(input_drug_atom_one_hot)
+    drug_smile_length_chunk = np.array(drug_smile_length_chunk)
+    drug_atom_one_hot_chunk = tf.stack(drug_atom_one_hot_chunk)
+
+    for smile_seq in batch_smile_seq:
+        edge_type_matrix = get_drug_edge_type(smile_seq)
+        shape = edge_type_matrix.shape[0]
+        edge_type_matrix = tf.gather(edge_type_dict,tf.cast(edge_type_matrix,tf.int16),axis=0)
+        #drug_rel_position = tf.cast(tf.gather(P[0], tf.cast(rel_distance_,tf.int32), axis=0), tf.float32)
+        concat_left = tf.zeros((smile_length-shape,shape,5))
+        concat_right = tf.zeros((smile_length,smile_length-shape,5))
+        edge_type_matrix = tf.concat((edge_type_matrix,concat_left),axis=0)
+        edge_type_matrix = tf.concat((edge_type_matrix,concat_right),axis=1)
+        edge_type_matrix_chunk.append(edge_type_matrix)
+    edge_type_matrix_chunk = tf.stack(edge_type_matrix_chunk)
+
+    for cell_line_ in batch_cell_line_name:
+        try:
+            gene_expression_singlecelline = continuous_gene_exp.loc[cell_line_]
+        except:
+            gene_expression_singlecelline = continuous_gene_exp
+        gene_expression_chunk.append(gene_expression_singlecelline)
+        try:
+            gene_mutation_singlecelline = mutation_gene.loc[cell_line_]
+        except:
+            gene_mutation_singlecelline = mutation_gene
+        gene_mutation_chunk.append(gene_mutation_singlecelline)
+
+    if not batch_gene_prior == None:
+        gene_prior_chunk = tf.stack(batch_gene_prior)
+    else:
+        gene_prior_chunk = 0
+    gene_expression_chunk = tf.stack(gene_expression_chunk)
+    gene_expression_bin_chunk = tf.gather(gene_expression_bin_dict,tf.cast(gene_expression_chunk,tf.int16),axis=0)
+    gene_mutation_chunk = tf.stack(gene_mutation_chunk)
+    gene_mutation_bin_chunk = tf.gather(gene_mutation_dict,tf.cast(gene_mutation_chunk,tf.int16),axis=0)
+
+    return drug_atom_one_hot_chunk, drug_rel_position_chunk, edge_type_matrix_chunk, \
+    drug_smile_length_chunk, gene_expression_chunk, gene_mutation_bin_chunk, gene_prior_chunk
+
 
 
 def extract_atoms_bonds(weight_min_max,smile):
@@ -293,7 +367,7 @@ if __name__ == '__main__':
     df_drug_eff.to_csv('output/drug_effect_prediction.csv')
 
 
-    top_genes_score, top_genes_index = tf.math.top_k(feature_select_score_gene[5], k=6144)
+    top_genes_score, top_genes_index = tf.math.top_k(feature_select_score_gene[0], k=6144)
     top_gene_names = np.array([gene_name_avail_geneformer[j] for j in top_genes_index])
 
     """

@@ -45,8 +45,8 @@ for i in range(2):
     gene_mutation_dict[i,i] = 1
 gene_mutation_dict = tf.cast(gene_mutation_dict, dtype=tf.float32)
 
-with open('gene_embedding_important.npy', 'rb') as f:
-	gene_embeddings = np.load(f)
+#with open('gene_embedding_important.npy', 'rb') as f:
+	#gene_embeddings = np.load(f)
 
 vocabulary_drug = ['F', 'S', 'N', 'O', 'I', 'L', 'B', 'C']
 vocabulary_gene_mutation = [0, 1]
