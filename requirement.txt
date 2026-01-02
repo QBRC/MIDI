@@ -16,5 +16,7 @@ pip install tdigest==0.5.2.2
 pip install gseapy==1.1.9
 pip install openpyxl==3.1.5
 pip install numpy==1.24.3
+pip install scipy==1.15.3
+pip install ipython==8.13.0
 pip install tensorflow==2.13.1
 pip install tensorflow_addons==0.23.0
