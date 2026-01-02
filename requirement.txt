@@ -2,19 +2,19 @@ pip install pandas==2.2.2
 pip install pyreadr==0.5.2
 pip install rdkit==2024.09.5
 python -m pip install -U matplotlib==3.10.0
-pip install networkx
+pip install networkx==3.5
 pip install seaborn==0.13.2
-pip install pubchempy
-pip install -U scikit-learn
-pip install selfies
-pip install transformers
-pip install datasets
-pip install anndata
-pip install loompy
-pip install scanpy
-pip install tdigest
-pip install gseapy
-pip install openpyxl
+pip install pubchempy==1.0.5
+pip install -U scikit-learn==1.7.0
+pip install selfies==2.2.0
+pip install transformers==4.52.4
+pip install datasets==3.6.0
+pip install anndata==0.11.4
+pip install loompy==3.0.8
+pip install scanpy==1.11.2
+pip install tdigest==0.5.2.2
+pip install gseapy==1.1.9
+pip install openpyxl==3.1.5
 pip install numpy==1.24.3
 pip install tensorflow==2.13.1
 pip install tensorflow_addons==0.23.0
