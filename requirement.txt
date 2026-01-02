@@ -11,7 +11,6 @@ pip install pubchempy
 pip install -U scikit-learn
 pip install tensorflow_addons==0.23.0
 pip install selfies
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 pip install transformers
 pip install datasets
 pip install anndata
