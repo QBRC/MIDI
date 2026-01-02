@@ -4,7 +4,6 @@ pip install pyreadr==0.5.2
 pip install tensorflow==2.13.1
 pip install rdkit==2024.09.5
 python -m pip install -U matplotlib==3.10.0
-pip install ipython
 pip install networkx
 pip install seaborn==0.13.2
 pip install pubchempy
